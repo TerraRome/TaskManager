@@ -1,0 +1,145 @@
+{
+  "name": "Schedule Timeline Scroll",
+  "slug": "schedule-timeline-scroll",
+  "description": "Mobile schedule home screen with horizontal day selector, vertical timeline with expandable task cards, floating bottom navigation",
+  "platform": "mobile",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "responsive": false,
+  "interactivity": {
+    "enabled": true,
+    "behaviors": [
+      {
+        "selector": ".nav-btn",
+        "event": "click",
+        "action": "navigate-screen",
+        "target": "[data-target]"
+      },
+      {
+        "selector": ".day-pill",
+        "event": "click",
+        "action": "toggle-active",
+        "target": ".day-pill"
+      },
+      {
+        "selector": ".task-card",
+        "event": "click",
+        "action": "toggle-expand",
+        "target": ".task-details"
+      },
+      {
+        "selector": "#monthDropdownBtn",
+        "event": "click",
+        "action": "toggle-dropdown",
+        "target": "#monthDropdownMenu"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "navigation-bar",
+      "label": "Header",
+      "description": "Top bar with back button, Schedule title, notification bell with badge",
+      "order": 0,
+      "layers": [
+        { "id": "back-btn", "type": "icon-button", "position": "left" },
+        { "id": "title", "type": "text", "content": "Schedule", "position": "center" },
+        { "id": "notification-btn", "type": "icon-button", "position": "right", "badge": true }
+      ]
+    },
+    {
+      "id": "month-selector",
+      "type": "dropdown",
+      "label": "Month Selector",
+      "description": "Month/year label with chevron, click to open dropdown menu with month options",
+      "order": 1,
+      "layers": [
+        { "id": "month-label", "type": "text", "content": "November 2026" },
+        { "id": "chevron-btn", "type": "icon" },
+        {
+          "id": "dropdown-menu",
+          "type": "dropdown",
+          "options": [
+            "October 2026", "November 2026", "December 2026",
+            "January 2027", "February 2027", "March 2027"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "day-selector",
+      "type": "horizontal-scroll",
+      "label": "Day Selector",
+      "description": "Horizontally scrollable row of day pills showing day label and date number, active pill highlighted",
+      "order": 2,
+      "layers": [
+        {
+          "id": "day-pill",
+          "type": "pill",
+          "states": ["default", "active", "today"],
+          "content": { "top": "MON", "bottom": "15" }
+        }
+      ]
+    },
+    {
+      "id": "timeline",
+      "type": "vertical-scroll",
+      "label": "Timeline",
+      "description": "Vertical timeline with hourly slots, task cards expand on tap to show description and tags",
+      "order": 3,
+      "layers": [
+        { "id": "time-label", "type": "text", "content": "9 AM" },
+        { "id": "timeline-dot", "type": "dot", "states": ["active", "inactive"] },
+        { "id": "timeline-line", "type": "line", "orientation": "vertical" },
+        {
+          "id": "task-card",
+          "type": "card",
+          "states": ["collapsed", "expanded"],
+          "content": {
+            "title": "UI Design Review",
+            "time": "09:00 - 10:30 AM",
+            "color-accent": "left-border",
+            "members": "avatar-stack",
+            "tags": ["Design", "UI/UX"],
+            "description": "Review the latest mockups and provide feedback."
+          }
+        }
+      ]
+    },
+    {
+      "id": "bottom-nav",
+      "type": "floating-nav",
+      "label": "Bottom Navigation",
+      "description": "Floating pill-shaped bottom navigation bar with 5 tabs and FAB",
+      "order": 4,
+      "layers": [
+        { "id": "nav-tab-home", "type": "nav-item", "label": "Home", "icon": "home" },
+        { "id": "nav-tab-schedule", "type": "nav-item", "label": "Schedule", "icon": "calendar", "active": true },
+        { "id": "nav-tab-projects", "type": "nav-item", "label": "Projects", "icon": "chart" },
+        { "id": "nav-tab-messages", "type": "nav-item", "label": "Messages", "icon": "message", "badge": true },
+        { "id": "nav-tab-profile", "type": "nav-item", "label": "Profile", "icon": "user" },
+        { "id": "fab-create", "type": "fab", "label": "Create Task", "icon": "plus" }
+      ]
+    },
+    {
+      "id": "toast",
+      "type": "notification",
+      "label": "Toast Notification",
+      "description": "Auto-dismissing toast at bottom with success icon and message",
+      "order": 5
+    }
+  ],
+  "implementation": {
+    "flutter_file": "lib/features/schedule/presentation/pages/schedule_page.dart",
+    "widgets": [
+      "lib/features/schedule/presentation/widgets/day_selector.dart",
+      "lib/features/schedule/presentation/widgets/timeline_list.dart",
+      "lib/features/schedule/presentation/widgets/task_card.dart",
+      "lib/features/schedule/presentation/widgets/schedule_bottom_nav.dart"
+    ],
+    "model": "lib/features/schedule/domain/models/task_item.dart"
+  }
+}

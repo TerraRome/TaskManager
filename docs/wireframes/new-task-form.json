@@ -1,0 +1,55 @@
+{
+  "name": "New Task Form",
+  "slug": "new-task-form",
+  "description": "Mobile form screen for creating a new task with title, project, time, color, assignees, description fields",
+  "platform": "mobile",
+  "viewport": { "width": 390, "height": 844 },
+  "responsive": false,
+  "interactivity": {
+    "enabled": true,
+    "behaviors": [
+      { "selector": "#createTaskForm", "event": "submit", "action": "create-task", "target": "dynamic" },
+      { "selector": ".nav-btn[data-target]", "event": "click", "action": "navigate-back", "target": "[data-target]" }
+    ]
+  },
+  "sections": [
+    {
+      "id": "header", "type": "navigation-bar", "label": "Header",
+      "description": "Top bar with back arrow, New Task title, and spacer", "order": 0,
+      "layers": [
+        { "id": "back-btn", "type": "icon-button", "icon": "arrow-left" },
+        { "id": "title", "type": "text", "content": "New Task" },
+        { "id": "spacer", "type": "spacer" }
+      ]
+    },
+    {
+      "id": "form", "type": "form", "label": "Create Task Form",
+      "description": "Full form: task name input, project select, start/end time, color accent radio picker, team assignees, description textarea, submit button",
+      "order": 1,
+      "layers": [
+        { "id": "field-task-name", "type": "input", "label": "Task Name", "placeholder": "e.g. Mobile App Usability Testing" },
+        { "id": "field-project", "type": "select", "label": "Project", "options": ["Fintech App Redesign", "Q4 Marketing Assets", "Design System v2.0"] },
+        { "id": "field-start-time", "type": "time-input", "label": "Start Time", "value": "09:15" },
+        { "id": "field-end-time", "type": "time-input", "label": "End Time", "value": "10:45" },
+        { "id": "field-color", "type": "color-picker", "label": "Color Accent", "options": ["blue", "purple", "green", "orange", "red"] },
+        { "id": "field-assignees", "type": "assignee-picker", "label": "Assignees" },
+        { "id": "field-description", "type": "textarea", "label": "Description", "placeholder": "Add task details..." },
+        { "id": "submit-btn", "type": "button", "label": "Create Task" }
+      ]
+    },
+    {
+      "id": "bottom-nav", "type": "bottom-navigation", "label": "Bottom Navigation",
+      "description": "Floating pill-shaped bottom nav with 4 tabs + FAB", "order": 2,
+      "layers": [
+        { "id": "nav-tab-home", "type": "nav-item", "icon": "house" },
+        { "id": "nav-tab-projects", "type": "nav-item", "icon": "chart" },
+        { "id": "nav-tab-messages", "type": "nav-item", "icon": "message", "badge": true },
+        { "id": "nav-tab-profile", "type": "nav-item", "icon": "user" },
+        { "id": "fab-create", "type": "fab", "icon": "plus", "active": true }
+      ]
+    }
+  ],
+  "implementation": {
+    "flutter_file": "lib/features/new_task/presentation/pages/new_task_page.dart"
+  }
+}

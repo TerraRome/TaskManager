@@ -1,0 +1,58 @@
+{
+  "name": "Profile Stats Card",
+  "slug": "profile-stats-card",
+  "description": "Mobile user profile screen with avatar, stats grid, settings toggles, and logout button",
+  "platform": "mobile",
+  "viewport": { "width": 390, "height": 844 },
+  "responsive": false,
+  "interactivity": { "enabled": false },
+  "sections": [
+    {
+      "id": "header", "type": "navigation-bar", "label": "Header",
+      "description": "Top bar with Profile title and settings gear icon", "order": 0,
+      "layers": [
+        { "id": "title", "type": "text", "content": "Profile" },
+        { "id": "settings-btn", "type": "icon-button", "icon": "gear" }
+      ]
+    },
+    {
+      "id": "profile-card", "type": "profile-card", "label": "Profile Card",
+      "description": "Centered card with avatar (editable), name, role, 3 stats", "order": 1,
+      "layers": [
+        { "id": "avatar", "type": "image", "shape": "circle", "editable": true },
+        { "id": "name", "type": "text", "content": "Alex Morgan" },
+        { "id": "role", "type": "text", "content": "Lead UI/UX Designer • Tech Team" },
+        { "id": "stat-completed", "type": "stat", "value": "42", "label": "COMPLETED" },
+        { "id": "stat-ongoing", "type": "stat", "value": "12", "label": "ONGOING" },
+        { "id": "stat-ontime", "type": "stat", "value": "98%", "label": "ON-TIME", "highlight": true }
+      ]
+    },
+    {
+      "id": "settings-list", "type": "list", "label": "Settings",
+      "description": "Settings rows: Dark Mode toggle, Push Notifications toggle, Help & Support arrow", "order": 2,
+      "layers": [
+        { "id": "setting-darkmode", "type": "toggle-row", "icon": "moon", "label": "Dark Mode" },
+        { "id": "setting-notifications", "type": "toggle-row", "icon": "bell", "label": "Push Notifications" },
+        { "id": "setting-help", "type": "link-row", "icon": "question", "label": "Help & Support" }
+      ]
+    },
+    {
+      "id": "logout", "type": "button", "label": "Logout Button",
+      "description": "Destructive logout button at bottom", "order": 3
+    },
+    {
+      "id": "bottom-nav", "type": "bottom-navigation", "label": "Bottom Navigation",
+      "description": "Floating pill-shaped bottom nav with 4 tabs + FAB", "order": 4,
+      "layers": [
+        { "id": "nav-tab-home", "type": "nav-item", "icon": "house" },
+        { "id": "nav-tab-projects", "type": "nav-item", "icon": "chart" },
+        { "id": "nav-tab-messages", "type": "nav-item", "icon": "message", "badge": true },
+        { "id": "nav-tab-profile", "type": "nav-item", "icon": "user", "active": true },
+        { "id": "fab-create", "type": "fab", "icon": "plus" }
+      ]
+    }
+  ],
+  "implementation": {
+    "flutter_file": "lib/features/profile/presentation/pages/profile_page.dart"
+  }
+}
