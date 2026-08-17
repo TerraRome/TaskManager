@@ -40,6 +40,10 @@ A full-featured Flutter task manager app built from scratch, covering the comple
 |-----------|-------------|--------------|-------------|
 | <img src="docs/screenshots/17_home_dark.png" width="200"> | <img src="docs/screenshots/18_schedule_dark.png" width="200"> | <img src="docs/screenshots/19_projects_dark.png" width="200"> | <img src="docs/screenshots/20_profile_dark.png" width="200"> |
 
+| Messages Dark |
+|--------------|
+| <img src="docs/screenshots/21_messages_dark.png" width="200"> |
+
 ---
 
 ### GIF Flows
