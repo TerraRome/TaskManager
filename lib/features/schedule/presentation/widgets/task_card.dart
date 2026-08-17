@@ -44,15 +44,16 @@ class _TaskCardState extends State<TaskCard>
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: _toggle,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: cs.surface,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -62,7 +63,6 @@ class _TaskCardState extends State<TaskCard>
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Color accent bar
               Container(
                 width: 4,
                 decoration: BoxDecoration(
@@ -92,10 +92,10 @@ class _TaskCardState extends State<TaskCard>
                           AnimatedRotation(
                             turns: _expanded ? 0.5 : 0,
                             duration: const Duration(milliseconds: 250),
-                            child: const Icon(
+                            child: Icon(
                               Icons.keyboard_arrow_down_rounded,
                               size: 20,
-                              color: AppColors.textSecondary,
+                              color: cs.onSurface.withValues(alpha: 0.5),
                             ),
                           ),
                         ],
@@ -103,10 +103,10 @@ class _TaskCardState extends State<TaskCard>
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.access_time_rounded,
                             size: 13,
-                            color: AppColors.textSecondary,
+                            color: cs.onSurface.withValues(alpha: 0.5),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -119,15 +119,14 @@ class _TaskCardState extends State<TaskCard>
                           ],
                         ],
                       ),
-                      // Expanded details
                       SizeTransition(
                         sizeFactor: _expandAnimation,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 12),
-                            const Divider(
-                              color: AppColors.timelineLine,
+                            Divider(
+                              color: cs.onSurface.withValues(alpha: 0.12),
                               height: 1,
                             ),
                             const SizedBox(height: 12),
@@ -135,7 +134,7 @@ class _TaskCardState extends State<TaskCard>
                               Text(
                                 widget.task.description!,
                                 style: AppTextStyles.body.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: cs.onSurface.withValues(alpha: 0.5),
                                 ),
                               ),
                             if (widget.task.tags.isNotEmpty) ...[

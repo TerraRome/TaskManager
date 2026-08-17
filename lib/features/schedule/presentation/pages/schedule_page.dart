@@ -1,77 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
-import '../../domain/models/task_item.dart';
+import '../../../../core/providers/task_provider.dart';
+import '../../../../core/widgets/filter_bottom_sheet.dart';
 import '../widgets/day_selector.dart';
 import '../widgets/timeline_list.dart';
 import '../widgets/schedule_bottom_nav.dart';
 
-class SchedulePage extends StatefulWidget {
+class SchedulePage extends ConsumerStatefulWidget {
   const SchedulePage({super.key});
 
   @override
-  State<SchedulePage> createState() => _SchedulePageState();
+  ConsumerState<SchedulePage> createState() => _SchedulePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+class _SchedulePageState extends ConsumerState<SchedulePage> {
   DateTime _selectedDate = DateTime.now();
   DateTime _currentMonth = DateTime.now();
   int _currentNavIndex = 1;
   bool _showMonthDropdown = false;
   bool _showToast = false;
+  FilterResult _filterResult = FilterResult.empty();
 
   static final List<String> _months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
 
-  // Sample tasks
-  List<TaskItem> get _tasksForSelectedDay => [
-    TaskItem(
-      id: '1',
-      title: 'UI Design Review',
-      description: 'Review the latest mockups and provide feedback to the design team.',
-      timeRange: '09:00 - 10:30 AM',
-      startTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 9),
-      endTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 10, 30),
-      color: AppColors.taskBlue,
-      members: ['Alice', 'Bob', 'Carol'],
-      tags: ['Design', 'UI/UX'],
-    ),
-    TaskItem(
-      id: '2',
-      title: 'Sprint Planning',
-      description: 'Plan tasks and story points for the upcoming sprint.',
-      timeRange: '11:00 - 12:00 PM',
-      startTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 11),
-      endTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 12),
-      color: AppColors.taskPurple,
-      members: ['Dave', 'Eve'],
-      tags: ['Agile', 'Planning'],
-    ),
-    TaskItem(
-      id: '3',
-      title: 'Backend API Integration',
-      description: 'Connect the new endpoints to the mobile client.',
-      timeRange: '13:00 - 15:00 PM',
-      startTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 13),
-      endTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 15),
-      color: AppColors.taskGreen,
-      members: ['Frank'],
-      tags: ['Backend', 'API'],
-    ),
-    TaskItem(
-      id: '4',
-      title: 'Team Standup',
-      description: 'Daily sync with the entire product team.',
-      timeRange: '16:00 - 16:30 PM',
-      startTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 16),
-      endTime: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 16, 30),
-      color: AppColors.taskOrange,
-      members: ['Alice', 'Bob'],
-      tags: ['Meeting'],
-    ),
-  ];
+  void _onNavTap(int index) {
+    if (index == _currentNavIndex) return;
+    setState(() => _currentNavIndex = index);
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(context, '/');
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(context, '/projects');
+        break;
+      case 3:
+        Navigator.pushReplacementNamed(context, '/messages');
+        break;
+      case 4:
+        Navigator.pushReplacementNamed(context, '/profile');
+        break;
+    }
+  }
 
   void _onDaySelected(DateTime date) {
     setState(() => _selectedDate = date);
@@ -101,8 +75,32 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    final taskState = ref.watch(taskProvider);
+    final tasksForDay = taskState.tasksForDate(_selectedDate);
+
+    // Apply FilterResult on top of provider results
+    final filtered = tasksForDay.where((t) {
+      if (_filterResult.status == 'done' && !t.isDone) return false;
+      if (_filterResult.status == 'pending' && t.isDone) return false;
+      if (_filterResult.color != null &&
+          t.color.toARGB32() != _filterResult.color!.toARGB32()) {
+        return false;
+      }
+      return true;
+    }).toList();
+
+    // Sort
+    if (_filterResult.sortBy == 'title') {
+      filtered.sort((a, b) => a.title.compareTo(b.title));
+    } else if (_filterResult.sortBy == 'time') {
+      filtered.sort((a, b) {
+        if (a.startTime == null || b.startTime == null) return 0;
+        return a.startTime!.compareTo(b.startTime!);
+      });
+    }
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           Column(
@@ -113,29 +111,25 @@ class _SchedulePageState extends State<SchedulePage> {
               _buildDaySelector(),
               const SizedBox(height: 8),
               Expanded(
-                child: TimelineList(tasks: _tasksForSelectedDay),
+                child: TimelineList(tasks: filtered),
               ),
             ],
           ),
-          // Month dropdown overlay
           if (_showMonthDropdown) _buildMonthDropdownOverlay(),
-          // Floating bottom nav
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
             child: ScheduleBottomNav(
               currentIndex: _currentNavIndex,
-              onTap: (i) => setState(() => _currentNavIndex = i),
+              onTap: _onNavTap,
             ),
           ),
-          // FAB
           Positioned(
             right: 28,
-            bottom: 80,
+            bottom: 104,
             child: _buildFab(),
           ),
-          // Toast
           if (_showToast)
             Positioned(
               left: 20,
@@ -157,29 +151,56 @@ class _SchedulePageState extends State<SchedulePage> {
           children: [
             _IconBtn(
               icon: Icons.arrow_back_ios_new_rounded,
-              onTap: () {},
+              onTap: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pushReplacementNamed(context, '/');
+                }
+              },
             ),
             const Spacer(),
             Text('Schedule', style: AppTextStyles.heading2),
             const Spacer(),
-            Stack(
-              clipBehavior: Clip.none,
+            Row(
               children: [
                 _IconBtn(
-                  icon: Icons.notifications_none_rounded,
-                  onTap: () {},
+                  icon: Icons.search_rounded,
+                  onTap: () => Navigator.pushNamed(context, '/search'),
                 ),
-                Positioned(
-                  top: 6,
-                  right: 6,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: AppColors.badge,
-                      shape: BoxShape.circle,
+                const SizedBox(width: 8),
+                _IconBtn(
+                  icon: Icons.tune_rounded,
+                  onTap: () async {
+                    final result = await FilterBottomSheet.show(
+                      context,
+                      config: FilterConfig.schedule(),
+                      current: _filterResult,
+                    );
+                    if (result != null) setState(() => _filterResult = result);
+                  },
+                ),
+                const SizedBox(width: 8),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    _IconBtn(
+                      icon: Icons.notifications_none_rounded,
+                      onTap: () => Navigator.pushNamed(context, '/messages'),
                     ),
-                  ),
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: AppColors.badge,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -202,9 +223,9 @@ class _SchedulePageState extends State<SchedulePage> {
             AnimatedRotation(
               turns: _showMonthDropdown ? 0.5 : 0,
               duration: const Duration(milliseconds: 200),
-              child: const Icon(
+              child: Icon(
                 Icons.keyboard_arrow_down_rounded,
-                color: AppColors.textPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
                 size: 20,
               ),
             ),
@@ -227,60 +248,66 @@ class _SchedulePageState extends State<SchedulePage> {
       child: GestureDetector(
         onTap: () => setState(() => _showMonthDropdown = false),
         behavior: HitTestBehavior.opaque,
-        child: Stack(
-          children: [
-            Positioned(
-              top: 120,
-              left: 20,
-              child: Material(
-                elevation: 8,
-                borderRadius: BorderRadius.circular(16),
-                color: AppColors.surface,
-                child: SizedBox(
-                  width: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: List.generate(_months.length, (i) {
-                      final isSelected = i + 1 == _currentMonth.month;
-                      return GestureDetector(
-                        onTap: () => _selectMonth(i),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? AppColors.primaryLight
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            '${_months[i]} ${_currentMonth.year}',
-                            style: AppTextStyles.body.copyWith(
+        child: Builder(builder: (context) {
+          final cs = Theme.of(context).colorScheme;
+          return Stack(
+            children: [
+              Positioned(
+                top: 120,
+                left: 20,
+                child: Material(
+                  elevation: 8,
+                  borderRadius: BorderRadius.circular(16),
+                  color: cs.surface,
+                  child: SizedBox(
+                    width: 200,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(_months.length, (i) {
+                        final isSelected = i + 1 == _currentMonth.month;
+                        return GestureDetector(
+                          onTap: () => _selectMonth(i),
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            decoration: BoxDecoration(
                               color: isSelected
-                                  ? AppColors.primary
-                                  : AppColors.textPrimary,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
+                                  ? AppColors.primaryLight
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${_months[i]} ${_currentMonth.year}',
+                              style: AppTextStyles.body.copyWith(
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : cs.onSurface,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
       ),
     );
   }
 
   Widget _buildFab() {
     return GestureDetector(
-      onTap: _showTaskCreatedToast,
+      onTap: () async {
+        await Navigator.pushNamed(context, '/new-task');
+        _showTaskCreatedToast();
+      },
       child: Container(
         width: 52,
         height: 52,
@@ -330,13 +357,15 @@ class _IconBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconBtnColor = Theme.of(context).colorScheme.surface;
+    final iconColor = Theme.of(context).colorScheme.onSurface;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: iconBtnColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -346,7 +375,7 @@ class _IconBtn extends StatelessWidget {
             ),
           ],
         ),
-        child: Icon(icon, size: 18, color: AppColors.textPrimary),
+        child: Icon(icon, size: 18, color: iconColor),
       ),
     );
   }

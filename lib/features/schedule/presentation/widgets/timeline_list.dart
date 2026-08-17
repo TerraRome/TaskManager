@@ -21,9 +21,8 @@ class TimelineList extends StatelessWidget {
       itemBuilder: (context, index) {
         final hour = _hours[index];
         final hourTasks = tasks
-            .where((t) => t.startTime.hour == hour)
+            .where((t) => t.startTime?.hour == hour)
             .toList();
-
         return _TimelineRow(hour: hour, tasks: hourTasks);
       },
     );
@@ -38,11 +37,13 @@ class _TimelineRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final lineColor = cs.onSurface.withValues(alpha: 0.12);
+
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Time label
           SizedBox(
             width: 48,
             child: Padding(
@@ -55,7 +56,6 @@ class _TimelineRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          // Timeline line + dot
           Column(
             children: [
               Container(
@@ -64,23 +64,22 @@ class _TimelineRow extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: tasks.isNotEmpty
                       ? AppColors.timelineDot
-                      : AppColors.timelineLine,
+                      : lineColor,
                   shape: BoxShape.circle,
                   border: tasks.isNotEmpty
-                      ? Border.all(color: Colors.white, width: 2)
+                      ? Border.all(color: cs.surface, width: 2)
                       : null,
                 ),
               ),
               Expanded(
                 child: Container(
                   width: 2,
-                  color: AppColors.timelineLine,
+                  color: lineColor,
                 ),
               ),
             ],
           ),
           const SizedBox(width: 12),
-          // Task cards or empty space
           Expanded(
             child: tasks.isEmpty
                 ? const SizedBox(height: 56)

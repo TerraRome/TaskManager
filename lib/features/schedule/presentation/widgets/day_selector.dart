@@ -17,6 +17,7 @@ class DaySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final days = _generateDays();
+    final cs = Theme.of(context).colorScheme;
 
     return SizedBox(
       height: 80,
@@ -50,14 +51,14 @@ class DaySelector extends StatelessWidget {
                     style: AppTextStyles.label.copyWith(
                       color: isSelected
                           ? Colors.white.withValues(alpha: 0.8)
-                          : AppColors.textSecondary,
+                          : cs.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     day.day.toString(),
                     style: AppTextStyles.heading3.copyWith(
-                      color: isSelected ? Colors.white : AppColors.textPrimary,
+                      color: isSelected ? Colors.white : cs.onSurface,
                     ),
                   ),
                 ],
