@@ -105,6 +105,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
           SliverAppBar(
             expandedHeight: 260,
             collapsedHeight: kToolbarHeight + kTextTabBarHeight,
+            toolbarHeight: kToolbarHeight,
             pinned: true,
             backgroundColor: project.color,
             leading: GestureDetector(
@@ -152,7 +153,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
                 child: SafeArea(
                   child: Padding(
                     padding:
-                        const EdgeInsets.fromLTRB(20, 56, 20, 0),
+                        const EdgeInsets.fromLTRB(20, 56, 20, 56),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
