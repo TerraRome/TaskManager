@@ -114,6 +114,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage> {
   }
 
   Widget _buildHeader() {
+    final cs = Theme.of(context).colorScheme;
     return SafeArea(
       bottom: false,
       child: Padding(
@@ -131,7 +132,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.surface,
+                      color: cs.surface,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
@@ -141,8 +142,8 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage> {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.search_rounded,
-                        size: 18, color: AppColors.textPrimary),
+                    child: Icon(Icons.search_rounded,
+                        size: 18, color: cs.onSurface),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -160,7 +161,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: _filterResult.isEmpty
-                          ? AppColors.surface
+                          ? cs.surface
                           : AppColors.primary,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
@@ -174,9 +175,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage> {
                     child: Icon(
                       Icons.tune_rounded,
                       size: 18,
-                      color: _filterResult.isEmpty
-                          ? AppColors.textPrimary
-                          : Colors.white,
+                      color: _filterResult.isEmpty ? cs.onSurface : Colors.white,
                     ),
                   ),
                 ),

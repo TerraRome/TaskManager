@@ -103,7 +103,9 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
-            expandedHeight: 200,
+            expandedHeight: 260,
+            collapsedHeight: kToolbarHeight + kTextTabBarHeight,
+            toolbarHeight: kToolbarHeight,
             pinned: true,
             backgroundColor: project.color,
             leading: GestureDetector(
@@ -136,6 +138,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.pin,
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -150,7 +153,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
                 child: SafeArea(
                   child: Padding(
                     padding:
-                        const EdgeInsets.fromLTRB(20, 56, 20, 20),
+                        const EdgeInsets.fromLTRB(20, 56, 20, 56),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,

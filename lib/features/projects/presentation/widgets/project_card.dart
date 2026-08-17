@@ -134,6 +134,7 @@ class _MemberAvatars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final display = members.take(3).toList();
     return SizedBox(
       width: display.length * 20.0 + 4,
@@ -148,7 +149,7 @@ class _MemberAvatars extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.15 + i * 0.1),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1.5),
+                border: Border.all(color: cs.surface, width: 1.5),
               ),
               child: Center(
                 child: Text(

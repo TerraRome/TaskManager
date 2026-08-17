@@ -1,189 +1,75 @@
-# TaskFlow — App Showcase
+# TaskFlow
 
-> Flutter task manager app · 14 screens · Riverpod · Hive · Dark mode · Onboarding
+A task manager built with Flutter. 14 screens, dark mode, local persistence, Riverpod state management.
+
+**Stack:** Flutter 3.44.9 · Dart 3.12 · Riverpod · Hive · SharedPreferences  
+**Repo:** https://github.com/TerraRome/TaskManager
 
 ---
 
 ## Screenshots
 
-> Run `bash scripts/capture.sh screenshots` to capture all screens from the emulator.
+### Onboarding
 
-| Screen | File |
-|--------|------|
-| Splash | `docs/screenshots/01_splash.png` |
-| Onboarding 1 | `docs/screenshots/02_onboarding_1.png` |
-| Onboarding 2 | `docs/screenshots/03_onboarding_2.png` |
-| Onboarding 3 | `docs/screenshots/04_onboarding_3.png` |
-| Home | `docs/screenshots/05_home.png` |
-| Schedule | `docs/screenshots/06_schedule.png` |
-| New Task | `docs/screenshots/07_new_task.png` |
-| Task Detail | `docs/screenshots/08_task_detail.png` |
-| Edit Task | `docs/screenshots/09_edit_task.png` |
-| Projects | `docs/screenshots/10_projects.png` |
-| Project Detail | `docs/screenshots/11_project_detail.png` |
-| Search | `docs/screenshots/12_search.png` |
-| Statistics | `docs/screenshots/13_statistics.png` |
-| Messages | `docs/screenshots/14_messages.png` |
-| Profile | `docs/screenshots/15_profile.png` |
-| Settings | `docs/screenshots/16_settings.png` |
+| Splash | Home | Schedule | New Task |
+|--------|------|----------|---------|
+| <img src="docs/screenshots/01_splash.png" width="180"> | <img src="docs/screenshots/05_home.png" width="180"> | <img src="docs/screenshots/06_schedule.png" width="180"> | <img src="docs/screenshots/07_new_task.png" width="180"> |
 
----
+### Tasks & Projects
 
-## Screen Recordings (GIF)
+| Task Detail | Edit Task | Projects | Project Detail |
+|------------|----------|---------|---------------|
+| <img src="docs/screenshots/08_task_detail.png" width="180"> | <img src="docs/screenshots/09_edit_task.png" width="180"> | <img src="docs/screenshots/10_projects.png" width="180"> | <img src="docs/screenshots/11_project_detail.png" width="180"> |
 
-> Run `bash scripts/capture.sh gif <screen_name>` to record a specific flow.
-> Run `bash scripts/capture.sh gif all` to record all flows.
+### More Screens
 
-| Flow | File |
-|------|------|
-| Splash → Onboarding → Home | `docs/gifs/onboarding_flow.gif` |
-| Create new task | `docs/gifs/new_task_flow.gif` |
-| Task detail & edit | `docs/gifs/task_detail_flow.gif` |
-| Dark mode toggle | `docs/gifs/dark_mode_flow.gif` |
-| Project detail | `docs/gifs/project_detail_flow.gif` |
-| Statistics | `docs/gifs/statistics_flow.gif` |
-| Search | `docs/gifs/search_flow.gif` |
-| Profile edit | `docs/gifs/profile_edit_flow.gif` |
-
----
-
-## Features
-
-### Splash & Onboarding
-- Animated splash screen (scale + fade + slide) with `AppColors.primary` background
-- Smart navigation: first launch → Onboarding, returning user → Home
-- 3-slide onboarding with per-slide slide-in + fade animation
-- Skip / Next / Get Started with `shared_preferences` flag persistence
-
-### Home
-- Greeting with current date
-- Live task summary: Total / Done / Pending from `taskProvider`
-- Today's task list from Riverpod state
-- Quick add task FAB → `NewTaskPage`
-- Bottom navigation (5 tabs)
-
-### Schedule
-- Day selector (Mon–Sun) with animated active indicator
-- Task list filtered by selected day via `startTime`
-- Mark task done toggle
-- Swipe or tap to open `TaskDetailPage`
-
-### New Task
-- Full form: title, project selector, time pickers, priority, color, assignees, description
-- Validation with `GlobalKey<FormState>`
-- Calls `taskProvider.notifier.addTask()` on submit
-
-### Task Detail
-- Full task info: time range, project badge, members, tags, description
-- Mark as done toggle (persisted to Hive)
-- Edit button → `EditTaskPage`
-- More (⋯) modal: share, delete
-
-### Edit Task
-- Pre-filled form from existing `TaskItem`
-- `taskProvider.notifier.updateTask()` on save
-- Full dark mode support
-
-### Projects
-- Grid of project cards with color, progress bar, member avatars, task count
-- Live data from `projectsWithTaskCountProvider`
-- Summary row: total projects, tasks, completion rate
-
-### Project Detail
-- `NestedScrollView` with `SliverAppBar` (project color header)
-- Tasks tab: filter All / In Progress / Done via `isDone`
-- Overview tab: description, deadline, member list
-- More (⋯) modal: Edit / Share / Delete
-
-### Search
-- Real-time search across tasks and projects
-- Sectioned results with task color indicators and project badges
-- Empty state illustration
-
-### Statistics
-- Summary cards: Total / Completed / Pending (live from `taskProvider`)
-- Bar chart: Week / Month / Year period selector
-- Task breakdown: Done vs Pending percentage
-- Productivity Score: calculated from real done/total ratio
-- Top Projects: live from `projectsWithTaskCountProvider`, sorted by completedTasks
-
-### Messages (Notifications)
-- Filter tabs: All / Unread / Tasks / Projects
-- Mark all as read
-- Grouped by Today / Yesterday / N days ago
-- Notification types: task, mention, project, reminder
-
-### Profile
-- Editable name & role via bottom sheet modal
-- Auto-generated initials from name
-- Stats: Completed / Ongoing / On-Time
-- Settings card: notifications toggle, account links
-- Logout with confirmation dialog
-
-### Settings
-- Theme dropdown: System / Light / Dark — connected to `ThemeProvider.setDark()`
-- Language, notification, privacy, and account options
-- About section with app version
+| Search | Statistics | Messages | Profile | Settings |
+|--------|-----------|---------|---------|---------|
+| <img src="docs/screenshots/12_search.png" width="150"> | <img src="docs/screenshots/13_statistics.png" width="150"> | <img src="docs/screenshots/14_messages.png" width="150"> | <img src="docs/screenshots/15_profile.png" width="150"> | <img src="docs/screenshots/16_settings.png" width="150"> |
 
 ### Dark Mode
-- `ThemeProvider` (`InheritedWidget`) — no external library
-- `AppTheme.light` / `AppTheme.dark` with full `ColorScheme`
-- All screens use `Theme.of(context).colorScheme.*` — no hardcoded colors
 
-### State Management (Riverpod)
-- `taskProvider` — `StateNotifierProvider<TaskNotifier, TaskState>`
-- `projectProvider` — `StateNotifierProvider<ProjectNotifier, ProjectState>`
-- `projectsWithTaskCountProvider` — derived `Provider<List<ProjectItem>>`
-
-### Local Storage (Hive)
-- `TaskItemAdapter` (typeId 0) — manual `TypeAdapter`
-- `ProjectItemAdapter` (typeId 1) — manual `TypeAdapter`
-- `LocalStorageService` — static wrapper: init, load, save, delete
-- Seed data on first launch if box empty
-- Persist every mutation (add, update, delete)
+| Home | Schedule | Projects | Profile | Messages |
+|------|----------|---------|---------|---------|
+| <img src="docs/screenshots/17_home_dark.png" width="150"> | <img src="docs/screenshots/18_schedule_dark.png" width="150"> | <img src="docs/screenshots/19_projects_dark.png" width="150"> | <img src="docs/screenshots/20_profile_dark.png" width="150"> | <img src="docs/screenshots/21_messages_dark.png" width="150"> |
 
 ---
 
-## Tech Stack
+## Flows
 
-| Layer | Choice |
-|-------|--------|
-| Framework | Flutter 3.44.9 (FVM) |
-| Language | Dart 3.12 |
-| State | flutter_riverpod ^2.6.1 |
-| Storage | hive_flutter ^1.1.0 |
-| Preferences | shared_preferences ^2.3.2 |
-| Architecture | Feature-First (Level 2) |
-| Theme | Custom `ThemeProvider` (InheritedWidget) |
-| Fonts | Inter (via AppTextStyles) |
+| Onboarding | New Task |
+|-----------|---------|
+| <img src="docs/gifs/onboarding_flow.gif" width="200"> | <img src="docs/gifs/new_task_flow.gif" width="200"> |
 
 ---
 
-## Project Structure
+## How it works
 
+**Navigation**  
+Splash checks `onboarding_done` in SharedPreferences. First launch goes to onboarding, subsequent launches go straight to home. Onboarding has 3 slides with per-slide slide-in and fade animations.
+
+**State**  
+Riverpod `StateNotifierProvider` for tasks and projects. `projectsWithTaskCountProvider` is a derived provider that computes live task counts from both providers — used across Projects, Project Detail, and Statistics without duplication.
+
+**Storage**  
+Hive with hand-written TypeAdapters (no build_runner). Tasks and projects persist across launches. Seed data loads on first run when boxes are empty.
+
+**Dark mode**  
+Custom `ThemeProvider` using `InheritedWidget`. No external library. All screens use `Theme.of(context).colorScheme.*` — switching is instant and doesn't restart the app.
+
+**Architecture**  
+Feature-first: each screen lives in its own folder with `domain/models/`, `presentation/pages/`, and `presentation/widgets/`. The core layer holds shared providers, storage, themes, and widgets.
+
+---
+
+## Running locally
+
+```bash
+git clone https://github.com/TerraRome/TaskManager.git
+cd TaskManager
+flutter pub get
+flutter run --no-enable-impeller   # Android
+flutter run                        # iOS
 ```
-lib/
-├── app.dart                    # Route registration (14 routes)
-├── main.dart                   # Async init: Hive + ProviderScope
-├── core/
-│   ├── constants/              # AppColors, AppTextStyles
-│   ├── providers/              # taskProvider, projectProvider, themeProvider
-│   ├── storage/                # LocalStorageService, TypeAdapters
-│   ├── themes/                 # AppTheme.light / AppTheme.dark
-│   └── widgets/                # EmptyState, FilterBottomSheet
-└── features/
-    ├── splash/
-    ├── onboarding/
-    ├── home/
-    ├── schedule/
-    ├── new_task/
-    ├── task_detail/
-    ├── edit_task/
-    ├── projects/
-    ├── project_detail/
-    ├── search/
-    ├── statistics/
-    ├── messages/
-    ├── profile/
-    └── settings/
-```
+
+Flutter 3.44.9+ required. With FVM: `fvm flutter run`.
