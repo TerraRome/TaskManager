@@ -137,6 +137,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.pin,
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
