@@ -235,11 +235,12 @@ class _NewTaskPageState extends ConsumerState<NewTaskPage> {
   }
 
   Widget _buildCard({required List<Widget> children}) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: cs.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -269,6 +270,7 @@ class _NewTaskPageState extends ConsumerState<NewTaskPage> {
     int maxLines = 1,
     String? Function(String?)? validator,
   }) {
+    final cs = Theme.of(context).colorScheme;
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
@@ -276,34 +278,39 @@ class _NewTaskPageState extends ConsumerState<NewTaskPage> {
       style: AppTextStyles.body,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
+        hintStyle: AppTextStyles.body.copyWith(
+            color: cs.onSurface.withValues(alpha: 0.4)),
         filled: true,
-        fillColor: AppColors.background,
+        fillColor: cs.surfaceContainerHighest,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
     );
   }
 
   Widget _buildProjectPicker() {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: _selectedProject,
           hint: Text('Select project',
-              style: AppTextStyles.body.copyWith(color: AppColors.textLight)),
+              style: AppTextStyles.body.copyWith(
+                  color: cs.onSurface.withValues(alpha: 0.4))),
           isExpanded: true,
-          icon: const Icon(Icons.keyboard_arrow_down_rounded,
-              color: AppColors.textSecondary),
-          style: AppTextStyles.body,
+          dropdownColor: cs.surface,
+          icon: Icon(Icons.keyboard_arrow_down_rounded,
+              color: cs.onSurface.withValues(alpha: 0.6)),
+          style: AppTextStyles.body.copyWith(color: cs.onSurface),
           items: _projects
               .map((p) => DropdownMenuItem(value: p, child: Text(p)))
               .toList(),
@@ -317,12 +324,13 @@ class _NewTaskPageState extends ConsumerState<NewTaskPage> {
     required TimeOfDay time,
     required VoidCallback onTap,
   }) {
+    final cs = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.background,
+          color: cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -368,6 +376,7 @@ class _NewTaskPageState extends ConsumerState<NewTaskPage> {
   }
 
   Widget _buildAssigneePicker() {
+    final cs = Theme.of(context).colorScheme;
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -383,13 +392,13 @@ class _NewTaskPageState extends ConsumerState<NewTaskPage> {
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary : AppColors.background,
+              color: isSelected ? AppColors.primary : cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               name,
               style: AppTextStyles.captionMedium.copyWith(
-                color: isSelected ? Colors.white : AppColors.textSecondary,
+                color: isSelected ? Colors.white : cs.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),

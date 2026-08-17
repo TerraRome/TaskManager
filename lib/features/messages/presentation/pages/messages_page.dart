@@ -178,7 +178,7 @@ class _MessagesPageState extends State<MessagesPage> {
                                   child: Text(
                                     _sectionLabel(item.time),
                                     style: AppTextStyles.label.copyWith(
-                                      color: AppColors.textSecondary,
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                                     ),
                                   ),
                                 ),

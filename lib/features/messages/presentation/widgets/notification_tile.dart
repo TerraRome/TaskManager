@@ -39,7 +39,7 @@ class NotificationTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAvatar(),
+            _buildAvatar(context),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -70,7 +70,7 @@ class NotificationTile extends StatelessWidget {
                   Text(
                     item.body,
                     style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                      color: cs.onSurface.withValues(alpha: 0.6),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -84,8 +84,9 @@ class NotificationTile extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar() {
-    final color = _typeColor();
+  Widget _buildAvatar(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final color = _typeColor(cs);
     final icon = _typeIcon();
 
     return Container(
@@ -110,7 +111,7 @@ class NotificationTile extends StatelessWidget {
     );
   }
 
-  Color _typeColor() {
+  Color _typeColor(ColorScheme cs) {
     switch (item.type) {
       case NotificationType.task:
         return AppColors.taskBlue;
@@ -121,7 +122,7 @@ class NotificationTile extends StatelessWidget {
       case NotificationType.reminder:
         return AppColors.taskOrange;
       case NotificationType.system:
-        return AppColors.textSecondary;
+        return cs.onSurface.withValues(alpha: 0.4);
     }
   }
 
