@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/providers/task_provider.dart';
 import '../../domain/models/task_form_data.dart';
+import '../../../schedule/domain/models/task_item.dart';
 
-class NewTaskPage extends StatefulWidget {
+class NewTaskPage extends ConsumerStatefulWidget {
   final VoidCallback? onTaskCreated;
 
   const NewTaskPage({super.key, this.onTaskCreated});
 
   @override
-  State<NewTaskPage> createState() => _NewTaskPageState();
+  ConsumerState<NewTaskPage> createState() => _NewTaskPageState();
 }
 
-class _NewTaskPageState extends State<NewTaskPage> {
+class _NewTaskPageState extends ConsumerState<NewTaskPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
@@ -64,6 +67,30 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      final now = DateTime.now();
+      final startDt = DateTime(now.year, now.month, now.day,
+          _startTime.hour, _startTime.minute);
+      final endDt = DateTime(now.year, now.month, now.day,
+          _endTime.hour, _endTime.minute);
+      final timeRange =
+          '${_startTime.format(context)} - ${_endTime.format(context)}';
+
+      final task = TaskItem(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: _titleController.text.trim(),
+        description: _descController.text.trim().isEmpty
+            ? null
+            : _descController.text.trim(),
+        timeRange: timeRange,
+        startTime: startDt,
+        endTime: endDt,
+        color: _selectedColor,
+        members: List.from(_selectedAssignees),
+        tags: _selectedProject != null ? [_selectedProject!] : [],
+        projectId: _selectedProject,
+      );
+
+      ref.read(taskProvider.notifier).addTask(task);
       widget.onTaskCreated?.call();
       Navigator.pop(context, TaskFormData(
         title: _titleController.text.trim(),
@@ -80,7 +107,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           _buildAppBar(),
@@ -170,6 +197,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
   }
 
   Widget _buildAppBar() {
+    final cs = Theme.of(context).colorScheme;
     return SafeArea(
       bottom: false,
       child: Padding(
@@ -182,7 +210,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: cs.surface,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -192,8 +220,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.arrow_back_ios_new_rounded,
-                    size: 18, color: AppColors.textPrimary),
+                child: Icon(Icons.arrow_back_ios_new_rounded,
+                    size: 18, color: cs.onSurface),
               ),
             ),
             const Spacer(),

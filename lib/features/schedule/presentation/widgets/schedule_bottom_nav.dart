@@ -22,11 +22,12 @@ class ScheduleBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 28),
       height: 64,
       decoration: BoxDecoration(
-        color: AppColors.navBackground,
+        color: cs.surface,
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
@@ -57,7 +58,7 @@ class ScheduleBottomNav extends StatelessWidget {
                         size: 22,
                         color: isActive
                             ? AppColors.navActive
-                            : AppColors.navInactive,
+                            : cs.onSurface.withValues(alpha: 0.4),
                       ),
                       if (item.badge)
                         Positioned(
@@ -80,7 +81,7 @@ class ScheduleBottomNav extends StatelessWidget {
                     style: AppTextStyles.label.copyWith(
                       color: isActive
                           ? AppColors.navActive
-                          : AppColors.navInactive,
+                          : cs.onSurface.withValues(alpha: 0.4),
                       fontSize: 10,
                     ),
                   ),
