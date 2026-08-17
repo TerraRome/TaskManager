@@ -103,7 +103,7 @@ class _ProjectDetailPageState extends ConsumerState<ProjectDetailPage>
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
-            expandedHeight: 200,
+            expandedHeight: 260,
             pinned: true,
             backgroundColor: project.color,
             leading: GestureDetector(
