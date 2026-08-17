@@ -48,13 +48,9 @@ A full-featured Flutter task manager app built from scratch, covering the comple
 
 ### GIF Flows
 
-| Onboarding Flow | New Task Flow | Dark Mode Toggle | Project Detail |
-|----------------|--------------|-----------------|---------------|
-| <img src="docs/gifs/onboarding_flow.gif" width="200"> | <img src="docs/gifs/new_task_flow.gif" width="200"> | <img src="docs/gifs/dark_mode_flow.gif" width="200"> | <img src="docs/gifs/project_detail_flow.gif" width="200"> |
-
-| Task Detail & Edit | Search Flow | Statistics | Profile Edit |
-|-------------------|------------|-----------|-------------|
-| <img src="docs/gifs/task_detail_flow.gif" width="200"> | <img src="docs/gifs/search_flow.gif" width="200"> | <img src="docs/gifs/statistics_flow.gif" width="200"> | <img src="docs/gifs/profile_edit_flow.gif" width="200"> |
+| Onboarding Flow | New Task Flow |
+|----------------|--------------|
+| <img src="docs/gifs/onboarding_flow.gif" width="200"> | <img src="docs/gifs/new_task_flow.gif" width="200"> |
 
 ---
 
